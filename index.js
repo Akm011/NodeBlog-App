@@ -1,26 +1,31 @@
 const express = require('express')
 const path = require('path')
-
 const app = new express()
+const expressEdge = require('express-edge')
+// const connectToMongoose = require("./database")
+
+// connectToMongoose();
 
 app.use(express.static('public'))
+app.use(expressEdge)
+app.set('views', `${__dirname}/views`)
 
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'pages/index.html'))
+app.get('/', (req,res) => {
+    res.render('index')
 })
 
-app.get('/about', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'pages/about.html'))
+app.get('/about', (req,res)=>{
+    res.render('about')  //render the about.edge file which is a html format
 })
 
-app.get('/contact', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'pages/contact.html'))
+app.get('/post', (req,res)=>{
+    res.render('post')
 })
 
-app.get('/post', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'pages/post.html'))
+app.get('/contact', (req,res)=>{
+    res.render('contact')
 })
 
-app.listen(4000,()=>{
-    console.log('App listening on port 4000')
+app.listen(4000, ()=>{
+    console.log("App listening on port 4000")
 })
