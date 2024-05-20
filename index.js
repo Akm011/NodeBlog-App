@@ -1,14 +1,15 @@
 const express = require('express')
 const path = require('path')
-const app = new express()
+const mongoose =require('mongoose')
 const expressEdge = require('express-edge')
-// const connectToMongoose = require("./database")
 
-// connectToMongoose();
+const connectToMongoose = require("./database")
+connectToMongoose();
 
-app.use(express.static('public'))
-app.use(expressEdge)
-app.set('views', `${__dirname}/views`)
+const app = new express()
+app.use(express.static('public'))  //use public directory from here
+app.use(expressEdge)  //.use add functionality to express
+app.set('views', `${__dirname}/views`)  
 
 app.get('/', (req,res) => {
     res.render('index')
