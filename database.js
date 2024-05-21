@@ -9,7 +9,6 @@ const connectToMongoose = () => {
     mongoose.connect(mongoURI)
     .then(() => console.log("Connected to MongoDB"))
     .catch(err => console.log("Mongo error",err));
-
   }catch(err){
     console.log(err)
   }

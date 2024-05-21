@@ -1,32 +1,47 @@
 const express = require('express')
-const path = require('path')
-const mongoose =require('mongoose')
 const expressEdge = require('express-edge')
-
+const bodyParser = require("body-parser");
 const connectToMongoose = require("./database")
-connectToMongoose();
+// const fileUpload = require("express-fileupload");
 
+connectToMongoose();
 const app = new express()
+
 app.use(express.static('public'))  //use public directory from here
 app.use(expressEdge)  //.use add functionality to express
-app.set('views', `${__dirname}/views`)  
+app.set('views', `${__dirname}/views`)
+//Adding body parser to read data coming from browser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', (req,res) => {
+
+
+app.get('/', (req, res) => {
     res.render('index')
 })
 
-app.get('/about', (req,res)=>{
+
+app.get('/about', (req, res) => {
     res.render('about')  //render the about.edge file which is a html format
 })
 
-app.get('/post', (req,res)=>{
+app.get('/post', (req, res) => {
     res.render('post')
 })
 
-app.get('/contact', (req,res)=>{
+app.get('/contact', (req, res) => {
     res.render('contact')
 })
 
-app.listen(4000, ()=>{
+app.get('/posts/new', (req, res) => {
+    res.render('create')
+})
+
+app.post('/posts/store', (req,res) => {
+    console.log(req.body)
+    res.redirect('/')
+})
+
+app.listen(4000, () => {
     console.log("App listening on port 4000")
 })
