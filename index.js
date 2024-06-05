@@ -3,10 +3,6 @@ const expressEdge = require('express-edge')
 const bodyParser = require("body-parser");
 const connectToMongoose = require("./database")
 const fileUpload = require("express-fileupload");
-const path = require('path');
-
-
-const Post = require('./database/models/Post')
 
 connectToMongoose();
 const app = new express()
@@ -18,6 +14,12 @@ app.set('views', `${__dirname}/views`)
 //Adding body parser to read data coming from browser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//controllers
+const createPostController = require('./controllers/createPost')
+const homePageController = require('./controllers/homePage')
+const storePostController = require('./controllers/storePost')
+const getPostController = require('./controllers/getPost')
 
 const validateCreatePostMiddleware = (req, res, next) => {
     // Debug logging to see the content of req.files.image
@@ -37,63 +39,11 @@ const validateCreatePostMiddleware = (req, res, next) => {
 // Use the middleware for the '/posts/store' route
 app.use('/posts/store', validateCreatePostMiddleware);
 
-
-app.get('/', async (req, res) => {
-    const posts = await Post.find({})
-    console.log(posts)  //gives all the posts in database
-    res.render('index', {
-        posts
-    })
-})
-
-
-app.get('/about', (req, res) => {
-    res.render('about')  //render the about.edge file which is a html format
-})
-
-app.get('/post/:id', async (req, res) => {
-    console.log(req.params)
-    const post = await Post.findById(req.params.id)
-    res.render('post', {
-        post
-    })
-})
-
-app.get('/contact', (req, res) => {
-    res.render('contact')
-})
-
-app.get('/posts/new', (req, res) => {
-    res.render('create')
-})
-
-
-app.post('/posts/store', async (req, res) => {
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('No files were uploaded.');
-    }
-
-    const { image } = req.files;
-    const imagePath = path.resolve(__dirname, 'public/posts', image.name);
-
-    image.mv(imagePath, async (error) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).send(error);
-        }
-
-        try {
-            await Post.create({
-                ...req.body,
-                image: `/posts/${image.name}` // Store the path to the image in the database
-            });
-            res.redirect('/');
-        } catch (error) {
-            console.error(error);
-            res.redirect('/');
-        }
-    });
-});
+//calling controllers
+app.get('/', homePageController);
+app.get('/posts/new', createPostController);
+app.post('/posts/store', storePostController);
+app.get('/post/:id', getPostController);
 
 app.listen(4000, () => {
     console.log("App listening on port 4000")
