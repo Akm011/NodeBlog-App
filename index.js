@@ -1,11 +1,29 @@
 const express = require('express')
 const expressEdge = require('express-edge')
-const bodyParser = require("body-parser");
-const connectToMongoose = require("./database")
-const fileUpload = require("express-fileupload");
+const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
+const expressSession = require('express-session')
+const connectMongo = require('connect-mongo')
+const mongoose = require('mongoose')
 
-connectToMongoose();
 const app = new express()
+const mongoURI = "mongodb://127.0.0.1:27017/NodeBlog";
+
+mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.error("Mongo error", err));
+
+app.use(expressSession({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false,
+    store: connectMongo.create({
+        mongoUrl: mongoURI
+    })
+}))
 
 app.use(fileUpload())
 app.use(express.static('public'))  //use public directory from here
