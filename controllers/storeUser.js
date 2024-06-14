@@ -6,6 +6,8 @@ module.exports = async (req, res) => {
         res.redirect('/');
     } catch (error) {
         if(error){
+            const registrationErrors = Object.keys(error.errors).map(key => error.errors[key].message)
+            req.session.registrationErrors = registrationErrors
             res.redirect('/auth/register')
         }
         console.error("User creation error");

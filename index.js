@@ -45,12 +45,13 @@ const loginUserController = require('./controllers/loginUser')
 
 // Use the middleware for the '/posts/store' route
 const storePost = require('./middleware/storePost')
-app.use('/posts/store', storePost);
+const auth = require('./middleware/auth')
+
 
 //calling controllers
 app.get('/', homePageController);
-app.get('/posts/new', createPostController);
-app.post('/posts/store', storePostController);
+app.get('/posts/new', auth, createPostController);  //calling auth middleware
+app.post('/posts/store', auth, storePost, storePostController);
 app.get('/post/:id', getPostController);
 app.get('/auth/login', loginController);
 app.post('/users/login', loginUserController);
