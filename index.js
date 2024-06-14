@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload')
 const expressSession = require('express-session')
 const connectMongo = require('connect-mongo')
 const mongoose = require('mongoose')
+const connectFlash = require('connect-flash')
 
 const app = new express()
 const mongoURI = "mongodb://127.0.0.1:27017/NodeBlog";
@@ -24,7 +25,7 @@ app.use(expressSession({
         mongoUrl: mongoURI
     })
 }))
-
+app.use(connectFlash());
 app.use(fileUpload())
 app.use(express.static('public'))  //use public directory from here
 app.use(expressEdge)  //.use add functionality to express
@@ -42,6 +43,7 @@ const createUserController = require('./controllers/createUser')
 const storeUserController = require('./controllers/storeUser')
 const loginController = require('./controllers/login')
 const loginUserController = require('./controllers/loginUser')
+
 
 // Use the middleware for the '/posts/store' route
 const storePost = require('./middleware/storePost')

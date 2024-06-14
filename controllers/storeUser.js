@@ -7,7 +7,8 @@ module.exports = async (req, res) => {
     } catch (error) {
         if(error){
             const registrationErrors = Object.keys(error.errors).map(key => error.errors[key].message)
-            req.session.registrationErrors = registrationErrors
+            req.flash('registrationErrors', registrationErrors)
+            req.flash('data', req.body)
             res.redirect('/auth/register')
         }
         console.error("User creation error");
